@@ -1,0 +1,345 @@
+{
+  "users": [
+    {
+      "id": "u-admin",
+      "name": "K. Krishna Chaitanya",
+      "email": "admin@designharmony.com",
+      "phone": "7013162157",
+      "role": "admin",
+      "passwordHash": "18eced992714fb3859a492e906c2e27c:228374712cd4222a87e05c9ca2a708c4aba846d832ac890b8b03c07fb2a01f53c23d2ecc93ea4ccfa75881c6cc4f7c8b3dd5ce818b4edfe21b875fbdb3cd6257",
+      "avatar": "KC"
+    },
+    {
+      "id": "u-staff",
+      "name": "Ananya Rao",
+      "email": "staff@designharmony.com",
+      "phone": "8977527728",
+      "role": "staff",
+      "title": "Senior Interior Designer",
+      "passwordHash": "a734db23a0a831dfa43f21e680c12dc1:c52eef2ac2906a03379d85a7efc3bb995b4b9787ee0a2da0f3a2952d4b544f2fc4963da7fd7c1a872508a1bf3cac708969011c131100dfe821c054584bc056d0",
+      "avatar": "AR"
+    },
+    {
+      "id": "u-customer",
+      "name": "Rohan Mehta",
+      "email": "customer@designharmony.com",
+      "phone": "9848012345",
+      "role": "customer",
+      "passwordHash": "aa88e2c15116ec70d6685e7c11d8b355:b05372f756e59d90fecffa46291e5d51e5d4e141d04233195c796120bdbcd397e73aca39735974cfaa6962e89da54d14a790a6f6355599bd614920fef62944ea",
+      "avatar": "RM"
+    }
+  ],
+  "services": [
+    {
+      "id": "s1",
+      "title": "Complete Home Interiors",
+      "category": "Residential",
+      "status": "active",
+      "image": "/services/complete-home.webp",
+      "gallery": [
+        {
+          "url": "/uploads/e31b30ed4b1b37f73c96a39954895a02.jpg",
+          "name": "CUTE.jpg",
+          "uploadedAt": "2026-07-08T06:47:51.784Z"
+        }
+      ],
+      "updatedAt": "2026-07-08T06:47:51.784Z"
+    },
+    {
+      "id": "s2",
+      "title": "Modular Kitchen Design",
+      "category": "Residential",
+      "status": "active",
+      "image": "/services/modular-kitchen.webp"
+    },
+    {
+      "id": "s3",
+      "title": "Living Room Interiors",
+      "category": "Residential",
+      "status": "active",
+      "image": "/services/living-room.webp"
+    },
+    {
+      "id": "s4",
+      "title": "Bedroom Interiors",
+      "category": "Residential",
+      "status": "active",
+      "image": "/services/bedroom.webp"
+    },
+    {
+      "id": "s5",
+      "title": "Wardrobes & Storage",
+      "category": "Residential",
+      "status": "active",
+      "image": "/services/wardrobe-storage.webp"
+    },
+    {
+      "id": "s6",
+      "title": "False Ceiling & Lighting",
+      "category": "Specialist",
+      "status": "active",
+      "image": "/services/ceilings-lighting.webp"
+    },
+    {
+      "id": "s7",
+      "title": "Office Interiors",
+      "category": "Commercial",
+      "status": "active",
+      "image": "/services/office-interiors.webp"
+    },
+    {
+      "id": "s8",
+      "title": "3D Interior Visualization",
+      "category": "Design",
+      "status": "active",
+      "image": "/services/visualization-3d.webp"
+    },
+    {
+      "id": "s9",
+      "title": "Turnkey Interior Projects",
+      "category": "Execution",
+      "status": "active",
+      "image": "/services/turnkey-projects.webp"
+    }
+  ],
+  "bookings": [
+    {
+      "id": "b-mrbsxuf8-o2cv9",
+      "name": "test",
+      "mobile": "7989314395",
+      "email": "testuser@gmail.com",
+      "location": "pocharam,hyd",
+      "projectType": "Living Rooms",
+      "budget": "₹10–20L",
+      "preferredDate": "2026-07-21",
+      "message": "no",
+      "status": "new",
+      "createdAt": "2026-07-08T08:14:29.444Z"
+    },
+    {
+      "id": "b-mrbs9kpr-w1rj7",
+      "name": "Test User",
+      "mobile": "7989314395",
+      "email": "testuser@email.com",
+      "location": "pocharam,hyderabad",
+      "projectType": "Complete Home Interiors",
+      "budget": "₹20–35L",
+      "preferredDate": "2026-07-29",
+      "message": "no",
+      "customerId": "u-admin",
+      "status": "new",
+      "createdAt": "2026-07-08T07:55:37.119Z"
+    },
+    {
+      "id": "b-mqrlv2kh-q7qdu",
+      "name": "suma",
+      "mobile": "7989314395",
+      "email": "ullisumanasvi161@gmail.com",
+      "location": "Hyderabad",
+      "projectType": "Complete Home Interiors",
+      "budget": "₹20–35L",
+      "preferredDate": "2026-06-25",
+      "message": "i want more space ",
+      "customerId": "u-admin",
+      "photos": [
+        {
+          "name": "â.jpg",
+          "url": "/uploads/2768619a60569b22de4d6c206fe9034d",
+          "type": "image/jpeg",
+          "size": 24576
+        }
+      ],
+      "status": "confirmed",
+      "createdAt": "2026-06-24T05:00:59.201Z"
+    },
+    {
+      "id": "b1",
+      "name": "Sneha Reddy",
+      "mobile": "9988776655",
+      "email": "sneha@example.com",
+      "location": "Kokapet",
+      "projectType": "Complete Home Interiors",
+      "budget": "₹25–35L",
+      "preferredDate": "2026-06-24",
+      "status": "confirmed",
+      "createdAt": "2026-06-20T06:45:39.696Z"
+    },
+    {
+      "id": "b2",
+      "name": "Vikram Shah",
+      "mobile": "9876543210",
+      "email": "vikram@example.com",
+      "location": "Jubilee Hills",
+      "projectType": "Office Interiors",
+      "budget": "₹35–50L",
+      "preferredDate": "2026-06-28",
+      "status": "confirmed",
+      "createdAt": "2026-06-20T06:45:39.696Z"
+    }
+  ],
+  "projects": [
+    {
+      "id": "p1",
+      "name": "Aurelia Residence",
+      "customerId": "u-customer",
+      "customer": "Rohan Mehta",
+      "location": "Manikonda",
+      "category": "3BHK Residence",
+      "budget": 2800000,
+      "status": "ongoing",
+      "paymentStatus": "partial",
+      "progress": 68,
+      "staffId": "u-staff",
+      "designer": "Ananya Rao",
+      "startDate": "2026-04-10",
+      "dueDate": "2026-07-30",
+      "nextMilestone": "Wardrobe installation",
+      "image": "/bedroom.png"
+    },
+    {
+      "id": "p2",
+      "name": "Serein Kitchen",
+      "customer": "Sneha Reddy",
+      "location": "Kokapet",
+      "category": "Modular Kitchen",
+      "budget": 950000,
+      "status": "design",
+      "paymentStatus": "pending",
+      "progress": 32,
+      "staffId": "u-staff",
+      "designer": "Ananya Rao",
+      "startDate": "2026-06-02",
+      "dueDate": "2026-08-12",
+      "nextMilestone": "Material sign-off",
+      "image": "/kitchen.png"
+    },
+    {
+      "id": "p3",
+      "name": "Atelier One",
+      "customer": "Vikram Shah",
+      "location": "Jubilee Hills",
+      "category": "Office Interior",
+      "budget": 4200000,
+      "status": "completed",
+      "paymentStatus": "paid",
+      "progress": 100,
+      "staffId": "u-staff",
+      "designer": "Ananya Rao",
+      "startDate": "2026-01-20",
+      "dueDate": "2026-05-18",
+      "nextMilestone": "Project closed",
+      "image": "/office.png"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "t1",
+      "projectId": "p1",
+      "title": "Confirm veneer polish sample",
+      "status": "ongoing",
+      "priority": "high",
+      "due": "Today"
+    },
+    {
+      "id": "t2",
+      "projectId": "p1",
+      "title": "Upload wardrobe site measurements",
+      "status": "pending",
+      "priority": "medium",
+      "due": "Tomorrow"
+    },
+    {
+      "id": "t3",
+      "projectId": "p2",
+      "title": "Revise island lighting layout",
+      "status": "pending",
+      "priority": "medium",
+      "due": "Jun 23"
+    }
+  ],
+  "payments": [
+    {
+      "id": "pay1",
+      "projectId": "p1",
+      "customer": "Rohan Mehta",
+      "amount": 1400000,
+      "status": "partial",
+      "date": "2026-06-11"
+    },
+    {
+      "id": "pay2",
+      "projectId": "p3",
+      "customer": "Vikram Shah",
+      "amount": 4200000,
+      "status": "paid",
+      "date": "2026-05-16"
+    }
+  ],
+  "testimonials": [
+    {
+      "id": "tm1",
+      "name": "Madhavi & Arjun",
+      "location": "Manikonda",
+      "rating": 5,
+      "text": "They translated how we wanted our home to feel, not just how it should look. The execution was beautifully managed."
+    },
+    {
+      "id": "tm2",
+      "name": "Sanjay Varma",
+      "location": "Financial District",
+      "rating": 5,
+      "text": "Clear budgets, thoughtful design, and excellent site discipline. Our office feels quietly distinctive."
+    }
+  ],
+  "contacts": [],
+  "notifications": [
+    {
+      "id": "n1",
+      "userId": "u-customer",
+      "title": "Design update",
+      "message": "Your bedroom 3D view is ready for review.",
+      "read": false,
+      "createdAt": "2026-06-20T06:45:39.696Z"
+    },
+    {
+      "id": "n2",
+      "userId": "u-staff",
+      "title": "Site reminder",
+      "message": "Aurelia Residence review at 3:00 PM.",
+      "read": false,
+      "createdAt": "2026-06-20T06:45:39.696Z"
+    }
+  ],
+  "updates": [
+    {
+      "id": "up1",
+      "projectId": "p1",
+      "author": "Ananya Rao",
+      "note": "False ceiling framework completed in living and dining.",
+      "date": "2026-06-18"
+    },
+    {
+      "id": "up2",
+      "projectId": "p1",
+      "author": "Ananya Rao",
+      "note": "Kitchen carcass installation passed quality check.",
+      "date": "2026-06-16"
+    }
+  ],
+  "settings": {
+    "previewPhoto": "/uploads/659ef67c2bebc861e2f9b86bef768364.webp",
+    "updatedAt": "2026-07-08T07:19:41.911Z",
+    "previewPhotos": {
+      "Living Room": "/uploads/6a743cd768bf8c15e92e101aa34d0195",
+      "Kitchen": "/kitchen.png",
+      "Bedroom": "/uploads/659ef67c2bebc861e2f9b86bef768364.webp",
+      "Office": "/office.png"
+    },
+    "projectImages": {
+      "Aurelia Residence": "/uploads/44cad24edee54ccd6a3ff0e2ae95ed19.webp",
+      "Serein Kitchen": "/uploads/c6fffede8a441e6e695d2666298d28c5.jpg",
+      "Nocturne Suite": "/bedroom.png",
+      "Atelier One": "/office.png"
+    }
+  }
+}

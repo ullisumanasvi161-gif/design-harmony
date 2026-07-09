@@ -1,0 +1,31 @@
+.material-list {
+  gap: 10px;
+}
+
+.material-list > button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid transparent;
+  padding: 8px;
+  background: transparent;
+  font-size: 11px;
+  text-align: left;
+  transition: 0.2s;
+}
+
+.material-list > button:hover,
+.material-list > button.active {
+  border-color: var(--gold);
+  background: var(--card);
+}
+
+.material-list > button i {
+  flex: 0 0 28px;
+  border: 2px solid var(--paper);
+  box-shadow: 0 0 0 1px var(--line);
+}
+
+.material-list > button.active i {
+  box-shadow: 0 0 0 2px var(--gold);
+}
