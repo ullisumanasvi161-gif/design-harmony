@@ -106,9 +106,19 @@ function PublicLayout() {
 
   const isLightBgPage = ["/projects", "/preview", "/contact", "/consultation"].includes(location.pathname);
   const shouldBeScrolled = scrolled || isLightBgPage;
-  const isTeamUser = ["admin", "staff"].includes(user?.role);
-  const accountPath = user ? (isTeamUser ? "/portal" : "/consultation") : "/login?mode=register";
-  const accountLabel = user ? (isTeamUser ? "Dashboard" : "Book now") : "Sign up & book";
+  const isAdmin = user?.role === "admin";
+  const isStaff = user?.role === "staff";
+  const isCustomer = user?.role === "customer";
+
+  // Determine nav account link
+  const accountPath = isAdmin ? "/admin" : isStaff ? "/staff" : isCustomer ? "/account" : "/signup";
+  const accountLabel = isAdmin ? "Admin Portal" : isStaff ? "Staff Portal" : isCustomer ? "My Account" : "Sign up & book";
+
+  const { logout } = useAuth();
+
+  function signOut() {
+    logout();
+  }
 
   return (
     <div className="site-shell">
@@ -129,9 +139,17 @@ function PublicLayout() {
             <CircleUserRound size={18} />
             {accountLabel}
           </Link>
-          <Link className="button button--nav" to="/consultation">
-            Let's talk <ArrowUpRightIcon />
-          </Link>
+          {/* Show Sign Out button for logged-in customers */}
+          {isCustomer && (
+            <button className="nav-signout-btn" onClick={signOut} id="nav-customer-signout">
+              Sign out
+            </button>
+          )}
+          {!user && (
+            <Link className="button button--nav" to="/consultation">
+              Let's talk <ArrowUpRightIcon />
+            </Link>
+          )}
           <button className="menu-button" onClick={() => setOpen(!open)} aria-label="Menu">
             {open ? <X /> : <Menu />}
           </button>

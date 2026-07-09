@@ -513,3 +513,70 @@
     gap: 30px;
   }
 }
+
+/* ROLE CHIPS */
+.role-chip { font-size:10px; text-transform:uppercase; letter-spacing:1.5px; padding:4px 10px; border-radius:100px; display:inline-block; margin:0 0 20px 0; font-weight:600; }
+.role-chip--admin { background:rgba(180,120,60,.15); color:#c8863c; border:1px solid rgba(180,120,60,.25); }
+.role-chip--staff { background:rgba(40,120,140,.12); color:#1e8a9a; border:1px solid rgba(40,120,140,.2); }
+.role-chip--customer { background:rgba(90,140,90,.1); color:#3a7a3a; border:1px solid rgba(90,140,90,.18); }
+
+/* ADMIN PORTAL dark sidebar */
+.portal--admin .portal-side { background:#0f1117; border-right-color:rgba(255,255,255,.06); }
+.portal--admin .portal-side nav button { color:rgba(255,255,255,.55); }
+.portal--admin .portal-side nav button:hover,.portal--admin .portal-side nav button.active { color:#fff; background:rgba(255,255,255,.06); }
+.portal--admin .portal-side .side-bottom button,.portal--admin .portal-side .side-bottom a { color:rgba(255,255,255,.4); }
+.portal--admin .portal-side .side-bottom button:hover,.portal--admin .portal-side .side-bottom a:hover { color:#fff; }
+.portal--admin .side-head button { color:rgba(255,255,255,.4); }
+
+/* STAFF PORTAL dark sidebar */
+.portal--staff .portal-side { background:#0c1a1e; border-right-color:rgba(255,255,255,.06); }
+.portal--staff .portal-side nav button { color:rgba(255,255,255,.5); }
+.portal--staff .portal-side nav button:hover,.portal--staff .portal-side nav button.active { color:#fff; background:rgba(30,138,154,.18); }
+.portal--staff .portal-side .side-bottom button,.portal--staff .portal-side .side-bottom a { color:rgba(255,255,255,.4); }
+.portal--staff .portal-side .side-bottom button:hover,.portal--staff .portal-side .side-bottom a:hover { color:#fff; }
+.portal--staff .side-head button { color:rgba(255,255,255,.4); }
+.portal-topbar--staff { justify-content:space-between; }
+.portal-topbar--staff .portal-user { display:flex; align-items:center; gap:12px; }
+
+/* CUSTOMER PORTAL */
+.portal--customer .portal-topbar { display:flex; align-items:center; gap:16px; }
+.portal-brand-center { flex:1; display:flex; justify-content:center; }
+.portal--customer .portal-user { display:flex; align-items:center; gap:12px; }
+.customer-signout-topbar { display:flex; align-items:center; gap:6px; font-size:12px; font-weight:500; padding:7px 14px; border-radius:100px; border:1px solid var(--line); background:transparent; color:var(--ink); cursor:pointer; transition:background .2s,color .2s; }
+.customer-signout-topbar:hover { background:var(--ink); color:var(--bg); }
+.no-project-state { display:flex; align-items:center; justify-content:center; min-height:400px; }
+.no-project-card { text-align:center; max-width:400px; padding:60px 40px; background:var(--card); border:1px solid var(--line); border-radius:16px; }
+.no-project-card svg { color:var(--gold); margin-bottom:20px; }
+.no-project-card h2 { font-family:'Cormorant Garamond',Georgia,serif; font-size:28px; margin:0 0 12px; }
+.no-project-card p { color:var(--muted); font-size:14px; line-height:1.6; margin:0 0 24px; }
+.portal-heading--customer { display:flex; align-items:flex-start; justify-content:space-between; }
+
+/* AUTH BADGES */
+.auth-role-badge,.admin-portal-badge,.staff-portal-badge { display:inline-flex; align-items:center; gap:6px; font-size:10px; text-transform:uppercase; letter-spacing:1.2px; font-weight:600; padding:5px 12px; border-radius:100px; margin-bottom:24px; }
+.auth-role-badge { background:rgba(90,140,90,.1); color:#3a7a3a; border:1px solid rgba(90,140,90,.2); }
+.admin-portal-badge { background:rgba(180,60,60,.1); color:#c8423c; border:1px solid rgba(180,60,60,.2); }
+.staff-portal-badge { background:rgba(40,120,140,.1); color:#1e7a8a; border:1px solid rgba(40,120,140,.2); }
+.auth-portal-link { font-size:12px; color:var(--muted); text-decoration:underline; text-underline-offset:3px; transition:color .2s; }
+.auth-portal-link:hover { color:var(--ink); }
+.auth-portal-links { font-size:12px; color:var(--muted); margin-top:8px; }
+.auth-admin-footer,.auth-staff-footer { display:flex; flex-direction:column; gap:6px; margin-top:24px; }
+.eyebrow--admin { color:#c8423c; }
+.eyebrow--staff { color:#1e8a9a; }
+
+/* ADMIN + STAFF LOGIN BUTTONS */
+.button--admin-login { display:flex; align-items:center; gap:8px; justify-content:center; width:100%; padding:14px 24px; background:#1a1a2e; color:#fff; border:none; border-radius:4px; font-size:14px; font-weight:600; cursor:pointer; transition:background .2s; letter-spacing:.3px; }
+.button--admin-login:hover { background:#0d0d1a; }
+.button--admin-login:disabled { opacity:.5; cursor:not-allowed; }
+.button--staff-login { display:flex; align-items:center; gap:8px; justify-content:center; width:100%; padding:14px 24px; background:#0c4a52; color:#fff; border:none; border-radius:4px; font-size:14px; font-weight:600; cursor:pointer; transition:background .2s; letter-spacing:.3px; }
+.button--staff-login:hover { background:#083840; }
+.button--staff-login:disabled { opacity:.5; cursor:not-allowed; }
+.admin-error,.staff-error { display:flex; align-items:center; gap:8px; }
+
+/* NAV SIGN OUT BUTTON */
+.nav-signout-btn { font-size:12px; font-weight:500; padding:7px 14px; border-radius:100px; border:1px solid var(--line); background:transparent; color:var(--ink); cursor:pointer; transition:background .2s,color .2s,border-color .2s; white-space:nowrap; }
+.nav-signout-btn:hover { background:var(--ink); color:var(--bg); border-color:var(--ink); }
+
+/* USER AVATARS */
+.user-avatar { width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; flex-shrink:0; }
+.user-avatar--staff { background:rgba(30,138,154,.15); color:#1e8a9a; border:1px solid rgba(30,138,154,.3); }
+.user-avatar--customer { background:rgba(180,140,80,.15); color:#b48c50; border:1px solid rgba(180,140,80,.25); }

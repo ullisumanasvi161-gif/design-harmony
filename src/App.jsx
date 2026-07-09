@@ -11,17 +11,39 @@ import PublicLayout, {
   DesignPlanner,
   Services
 } from "./pages/Public";
-import Auth from "./pages/Auth";
-import Portal from "./pages/Portal";
+import CustomerAuth from "./pages/CustomerAuth";
+import CustomerAccount from "./pages/CustomerAccount";
+import AdminAuth from "./pages/AdminAuth";
+import AdminPortal from "./pages/AdminPortal";
+import StaffAuth from "./pages/StaffAuth";
+import StaffPortal from "./pages/StaffPortal";
 
 const AuthContext = createContext(null);
 
 export const useAuth = () => useContext(AuthContext);
 
-function Protected({ children, roles = [] }) {
+/** Requires user to be logged in with role = "customer" */
+function CustomerProtected({ children }) {
   const { user } = useAuth();
   if (!user) return <Navigate to="/login" replace />;
-  if (roles.length && !roles.includes(user.role)) return <Navigate to="/consultation" replace />;
+  if (user.role === "admin") return <Navigate to="/admin" replace />;
+  if (user.role === "staff") return <Navigate to="/staff" replace />;
+  return children;
+}
+
+/** Requires user to be logged in with role = "admin" */
+function AdminProtected({ children }) {
+  const { user } = useAuth();
+  if (!user) return <Navigate to="/admin/login" replace />;
+  if (user.role !== "admin") return <Navigate to="/admin/login" replace />;
+  return children;
+}
+
+/** Requires user to be logged in with role = "staff" (or admin) */
+function StaffProtected({ children }) {
+  const { user } = useAuth();
+  if (!user) return <Navigate to="/staff/login" replace />;
+  if (user.role !== "staff" && user.role !== "admin") return <Navigate to="/staff/login" replace />;
   return children;
 }
 
@@ -41,7 +63,6 @@ export default function App() {
       return null;
     }
   });
-  const [theme, setTheme] = useState("light");
 
   useEffect(() => {
     document.documentElement.dataset.theme = "light";
@@ -73,7 +94,7 @@ export default function App() {
         setUser(null);
       }
     }),
-    [user, theme]
+    [user]
   );
 
   useEffect(() => {
@@ -89,6 +110,7 @@ export default function App() {
       <RouteReset />
       <AnimatePresence mode="wait">
         <Routes>
+          {/* ── Public website routes ── */}
           <Route element={<PublicLayout />}>
             <Route index element={<Home />} />
             <Route path="/about" element={<About />} />
@@ -98,18 +120,84 @@ export default function App() {
             <Route path="/consultation" element={<Consultation />} />
             <Route path="/contact" element={<Contact />} />
           </Route>
-          <Route path="/login" element={<Auth />} />
+
+          {/* ── Customer auth ── */}
+          <Route path="/signup" element={<CustomerAuth />} />
+          <Route path="/login" element={<CustomerAuth />} />
+
+          {/* ── Customer protected area ── */}
           <Route
-            path="/portal/*"
+            path="/account"
             element={
-              <Protected roles={["admin", "staff"]}>
-                <Portal />
-              </Protected>
+              <CustomerProtected>
+                <CustomerAccount />
+              </CustomerProtected>
             }
           />
+          <Route
+            path="/account/*"
+            element={
+              <CustomerProtected>
+                <CustomerAccount />
+              </CustomerProtected>
+            }
+          />
+
+          {/* ── Admin portal ── */}
+          <Route path="/admin/login" element={<AdminAuth />} />
+          <Route
+            path="/admin"
+            element={
+              <AdminProtected>
+                <AdminPortal />
+              </AdminProtected>
+            }
+          />
+          <Route
+            path="/admin/*"
+            element={
+              <AdminProtected>
+                <AdminPortal />
+              </AdminProtected>
+            }
+          />
+
+          {/* ── Staff portal ── */}
+          <Route path="/staff/login" element={<StaffAuth />} />
+          <Route
+            path="/staff"
+            element={
+              <StaffProtected>
+                <StaffPortal />
+              </StaffProtected>
+            }
+          />
+          <Route
+            path="/staff/*"
+            element={
+              <StaffProtected>
+                <StaffPortal />
+              </StaffProtected>
+            }
+          />
+
+          {/* ── Legacy /portal redirect → role-based destination ── */}
+          <Route path="/portal" element={<PortalRedirect />} />
+          <Route path="/portal/*" element={<PortalRedirect />} />
+
+          {/* ── Catch-all ── */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </AnimatePresence>
     </AuthContext.Provider>
   );
+}
+
+/** Redirect old /portal links to the appropriate role-based destination */
+function PortalRedirect() {
+  const { user } = useAuth();
+  if (!user) return <Navigate to="/login" replace />;
+  if (user.role === "admin") return <Navigate to="/admin" replace />;
+  if (user.role === "staff") return <Navigate to="/staff" replace />;
+  return <Navigate to="/account" replace />;
 }
