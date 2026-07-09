@@ -580,3 +580,121 @@
 .user-avatar { width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; flex-shrink:0; }
 .user-avatar--staff { background:rgba(30,138,154,.15); color:#1e8a9a; border:1px solid rgba(30,138,154,.3); }
 .user-avatar--customer { background:rgba(180,140,80,.15); color:#b48c50; border:1px solid rgba(180,140,80,.25); }
+
+
+/* CUSTOMER EMPTY STATES */
+.customer-tab-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 400px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 60px 40px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+.customer-tab-empty__icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(180, 140, 80, 0.1);
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+.customer-tab-empty h3 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 28px;
+  margin: 0 0 12px;
+}
+.customer-tab-empty p {
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.6;
+  margin: 0 0 28px;
+  max-width: 400px;
+}
+
+/* CUSTOMER WELCOME STATE (OVERVIEW) */
+.customer-welcome {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 40px;
+  align-items: stretch;
+}
+.customer-welcome__card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 50px 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.customer-welcome__card h2 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 36px;
+  margin: 12px 0 16px;
+}
+.customer-welcome__card p {
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 0 0 32px;
+  max-width: 400px;
+}
+.customer-welcome__actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.customer-welcome__steps {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.welcome-step {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  padding: 24px 30px;
+  border-radius: 12px;
+  position: relative;
+  overflow: hidden;
+}
+.welcome-step span {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  font-size: 80px;
+  font-weight: 700;
+  color: var(--line);
+  opacity: 0.3;
+  line-height: 1;
+}
+.welcome-step strong {
+  display: block;
+  font-size: 15px;
+  margin-bottom: 6px;
+  color: var(--ink);
+}
+.welcome-step p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.5;
+  position: relative;
+  z-index: 1;
+}
+
+@media(max-width: 980px) {
+  .customer-welcome {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
