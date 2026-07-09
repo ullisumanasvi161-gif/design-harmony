@@ -4,7 +4,10 @@ import { fileURLToPath } from "node:url";
 import { hashPassword } from "./auth.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const DATA_FILE = path.join(__dirname, "..", "db.json");
+// On Vercel serverless, only /tmp is writable. Use it in production.
+const DATA_FILE = process.env.VERCEL === "1"
+  ? "/tmp/db.json"
+  : path.join(__dirname, "..", "db.json");
 
 const now = new Date().toISOString();
 const initialData = {

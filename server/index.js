@@ -358,6 +358,11 @@ app.use((err, _req, res, _next) => {
   res.status(500).json({ message: "Something went wrong. Please try again." });
 });
 
-app.listen(PORT, () => {
-  console.log(`Design Harmony API running at http://localhost:${PORT}`);
-});
+// Only listen when running locally (not on Vercel serverless)
+if (process.env.VERCEL !== "1") {
+  app.listen(PORT, () => {
+    console.log(`Design Harmony API running at http://localhost:${PORT}`);
+  });
+}
+
+export default app;
