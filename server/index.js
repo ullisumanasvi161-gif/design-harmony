@@ -11,7 +11,10 @@ import { id, readStore, writeStore } from "./store.js";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 const PORT = process.env.PORT || 4000;
-const uploadDir = path.join(__dirname, "..", "uploads");
+// On Vercel serverless, only /tmp is writable
+const uploadDir = process.env.VERCEL === "1"
+  ? "/tmp/uploads"
+  : path.join(__dirname, "..", "uploads");
 fs.mkdirSync(uploadDir, { recursive: true });
 
 app.use(cors());
