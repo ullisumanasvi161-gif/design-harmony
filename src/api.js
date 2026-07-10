@@ -41,5 +41,8 @@ export const api = {
   addUpdate: (body) => request("/updates", { method: "POST", body: JSON.stringify(body) }),
   invoice: (id) => request(`/invoice/${id}`),
   update3DPhoto: (room, body) => request(`/settings/3d-photo/${encodeURIComponent(room)}`, { method: "POST", body }),
-  updateProjectImage: (projectName, body) => request(`/settings/project-image/${encodeURIComponent(projectName)}`, { method: "POST", body })
+  updateProjectImage: (projectName, body) => request(`/settings/project-image/${encodeURIComponent(projectName)}`, { method: "POST", body }),
+  createUser: (body) => request("/users", { method: "POST", body: JSON.stringify(body) }),
+  createPayment: (body) => request("/payments", { method: "POST", body: JSON.stringify(body) }),
+  updatePayment: (id, body) => request(`/payments/${id}`, { method: "PATCH", body: JSON.stringify(body) })
 };

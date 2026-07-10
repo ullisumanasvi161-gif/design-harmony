@@ -194,6 +194,7 @@ app.post("/api/projects", requireAuth(["admin"]), (req, res) => {
   const db = readStore();
   const customerUser = db.users.find((u) => u.id === req.body.customerId);
   const staffUser = db.users.find((u) => u.id === req.body.staffId);
+  const budget = Number(req.body.budget) || 0;
 
   const project = {
     id: id("p"),
@@ -202,7 +203,7 @@ app.post("/api/projects", requireAuth(["admin"]), (req, res) => {
     customer: customerUser ? customerUser.name : (req.body.customer || "Unknown Client"),
     location: req.body.location || "Hyderabad",
     category: req.body.category || "General Interiors",
-    budget: Number(req.body.budget) || 0,
+    budget,
     status: req.body.status || "design",
     paymentStatus: req.body.paymentStatus || "pending",
     progress: Number(req.body.progress) || 0,
@@ -215,8 +216,74 @@ app.post("/api/projects", requireAuth(["admin"]), (req, res) => {
   };
 
   db.projects.unshift(project);
+  
+  if (budget > 0) {
+    const p1 = Math.round(budget * 0.4);
+    const p2 = Math.round(budget * 0.4);
+    const p3 = budget - p1 - p2;
+    const dateStr = new Date().toLocaleDateString("en-IN", { month: "short", day: "numeric", year: "numeric" });
+    db.payments.push({ id: id("pay"), projectId: project.id, customerId: project.customerId, customer: project.customer, amount: p1, status: "pending", date: dateStr, milestone: "Advance (40%)" });
+    db.payments.push({ id: id("pay"), projectId: project.id, customerId: project.customerId, customer: project.customer, amount: p2, status: "pending", date: "TBD", milestone: "Mid-project (40%)" });
+    db.payments.push({ id: id("pay"), projectId: project.id, customerId: project.customerId, customer: project.customer, amount: p3, status: "pending", date: "TBD", milestone: "Handover (20%)" });
+  }
+
   writeStore(db);
   res.status(201).json(project);
+});
+
+app.post("/api/users", requireAuth(["admin"]), (req, res) => {
+  const db = readStore();
+  if (db.users.some((user) => user.email.toLowerCase() === req.body.email?.toLowerCase())) {
+    return res.status(409).json({ message: "An account already exists with this email." });
+  }
+  const user = {
+    id: id("u"),
+    name: req.body.name,
+    email: req.body.email,
+    phone: req.body.phone || "",
+    role: req.body.role || "customer",
+    title: req.body.title || (req.body.role === "staff" ? "Interior Designer" : "Customer"),
+    avatar: req.body.name?.split(" ").map((part) => part[0]).join("").slice(0, 2).toUpperCase(),
+    passwordHash: hashPassword(req.body.password || "harmony123") // Default password
+  };
+  db.users.push(user);
+  writeStore(db);
+  res.status(201).json(publicUser(user));
+});
+
+app.post("/api/payments", requireAuth(["admin"]), (req, res) => {
+  const db = readStore();
+  const customerUser = db.users.find((u) => u.id === req.body.customerId);
+  const payment = {
+    id: id("pay"),
+    projectId: req.body.projectId || null,
+    customerId: req.body.customerId || null,
+    customer: customerUser ? customerUser.name : (req.body.customer || "Unknown"),
+    amount: Number(req.body.amount) || 0,
+    status: req.body.status || "paid",
+    date: req.body.date || new Date().toLocaleDateString("en-IN", { month: "short", day: "numeric", year: "numeric" }),
+    milestone: req.body.milestone || "Custom Payment"
+  };
+  db.payments.unshift(payment);
+  writeStore(db);
+  res.status(201).json(payment);
+});
+
+app.patch("/api/payments/:id", requireAuth(["admin", "customer"]), (req, res) => {
+  const db = readStore();
+  const index = db.payments.findIndex((p) => p.id === req.params.id);
+  if (index < 0) return res.status(404).json({ message: "Payment not found." });
+  
+  if (req.user.role === "customer" && db.payments[index].customerId !== req.user.id) {
+    return res.status(403).json({ message: "Not authorized to update this payment." });
+  }
+
+  db.payments[index] = { ...db.payments[index], ...req.body };
+  if (req.body.status === "paid" && db.payments[index].date === "TBD") {
+    db.payments[index].date = new Date().toLocaleDateString("en-IN", { month: "short", day: "numeric", year: "numeric" });
+  }
+  writeStore(db);
+  res.json(db.payments[index]);
 });
 
 app.patch("/api/services/:id/image", requireAuth(["admin"]), upload.single("image"), (req, res) => {

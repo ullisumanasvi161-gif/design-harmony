@@ -53,6 +53,7 @@ export default function CustomerAccount() {
   const [open, setOpen] = useState(false);
   const [tab, setTab] = useState("Overview");
   const [error, setError] = useState("");
+  const [showQR, setShowQR] = useState(null);
 
   const load = () => api.dashboard().then(setData).catch((err) => setError(err.message));
 
@@ -263,7 +264,6 @@ export default function CustomerAccount() {
           </div>
         );
 
-      // ── PAYMENTS ──────────────────────────────────────────────────
       case "Payments":
         if (!project) {
           return (
@@ -276,17 +276,40 @@ export default function CustomerAccount() {
             />
           );
         }
+        const paidTotal = data.payments.filter(p => p.status === "paid").reduce((sum, p) => sum + p.amount, 0);
         return (
           <div className="portal-grid" style={{ gridTemplateColumns: "1fr" }}>
-            <section className="panel payment-card">
-              <PanelHead title="Payment Details" />
-              <span>Project value</span>
-              <h3>{money(project.budget)}</h3>
-              <div>
-                <Status>{payment?.status || "pending"}</Status>
-                <b>{money(payment?.amount || 0)} paid</b>
+            <section className="panel panel--wide">
+              <PanelHead title="Payment Milestones" />
+              <div style={{ marginBottom: "20px", display: "flex", justifyContent: "space-between", padding: "16px", background: "var(--paper)", borderRadius: "8px" }}>
+                <div>
+                  <span style={{ fontSize: "12px", color: "var(--muted)", textTransform: "uppercase", letterSpacing: "1px" }}>Total Budget</span>
+                  <h3 style={{ margin: "4px 0 0" }}>{money(project.budget)}</h3>
+                </div>
+                <div style={{ textAlign: "right" }}>
+                  <span style={{ fontSize: "12px", color: "var(--muted)", textTransform: "uppercase", letterSpacing: "1px" }}>Amount Paid</span>
+                  <h3 style={{ margin: "4px 0 0", color: "var(--gold)" }}>{money(paidTotal)}</h3>
+                </div>
               </div>
-              <button onClick={invoice}><Download size={17} /> Download invoice</button>
+              <div className="payment-milestone-list" style={{ display: "grid", gap: "12px" }}>
+                {data.payments.map(payment => (
+                  <div key={payment.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px", border: "1px solid var(--line)", borderRadius: "8px" }}>
+                    <div>
+                      <strong>{payment.milestone}</strong>
+                      <div style={{ fontSize: "12px", color: "var(--muted)", marginTop: "4px" }}>{payment.date === "TBD" ? "To be determined" : `Due / Paid on: ${payment.date}`}</div>
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
+                      <div style={{ textAlign: "right" }}>
+                        <strong style={{ display: "block", marginBottom: "4px" }}>{money(payment.amount)}</strong>
+                        <Status>{payment.status}</Status>
+                      </div>
+                      {payment.status === "pending" && (
+                        <button className="button button--dark" onClick={() => setShowQR(payment)}>Pay Now</button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </section>
           </div>
         );
@@ -387,6 +410,61 @@ export default function CustomerAccount() {
 
           {renderTab()}
         </main>
+      </div>
+      {showQR && (
+        <QRPaymentModal 
+          payment={showQR} 
+          onClose={() => setShowQR(null)} 
+          onSuccess={() => { setShowQR(null); load(); }} 
+        />
+      )}
+    </div>
+  );
+}
+
+function QRPaymentModal({ payment, onClose, onSuccess }) {
+  const [loading, setLoading] = useState(false);
+
+  async function simulatePayment() {
+    setLoading(true);
+    try {
+      await api.updatePayment(payment.id, { status: 'paid' });
+      // Show success briefly before closing
+      setTimeout(() => {
+        onSuccess();
+      }, 800);
+    } catch (err) {
+      alert("Payment failed: " + err.message);
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div className="modal-overlay">
+      <div className="modal" style={{ textAlign: "center", maxWidth: "400px" }}>
+        <header style={{ borderBottom: "none", paddingBottom: 0 }}>
+          <button onClick={onClose} style={{ position: "absolute", right: 20, top: 20 }}><X size={20} /></button>
+        </header>
+        <div style={{ padding: "0 20px 20px" }}>
+          <h3 style={{ fontFamily: "Cormorant Garamond, serif", fontSize: "28px", margin: "0 0 8px" }}>Scan to Pay</h3>
+          <p style={{ color: "var(--muted)", margin: "0 0 24px" }}>{payment.milestone}</p>
+          
+          <div style={{ background: "#fff", padding: "24px", borderRadius: "16px", display: "inline-block", marginBottom: "24px", border: "1px solid var(--line)" }}>
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=designharmony@upi&pn=Design%20Harmony&am=5000" alt="QR Code" style={{ width: "200px", height: "200px", display: "block" }} />
+          </div>
+
+          <h2 style={{ fontSize: "32px", margin: "0 0 24px" }}>{money(payment.amount)}</h2>
+
+          <div style={{ display: "flex", gap: "12px", justifyContent: "center" }}>
+            <button className="button" onClick={onClose} disabled={loading}>Cancel</button>
+            <button className="button button--dark" onClick={simulatePayment} disabled={loading}>
+              {loading ? "Processing..." : "Simulate Payment"}
+            </button>
+          </div>
+          <p style={{ fontSize: "12px", color: "var(--muted)", marginTop: "20px" }}>
+            * Note: This is a simulated payment gateway for demonstration purposes.
+          </p>
+        </div>
       </div>
     </div>
   );

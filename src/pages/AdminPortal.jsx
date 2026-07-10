@@ -59,6 +59,9 @@ export default function AdminPortal() {
   const [tab, setTab] = useState("Overview");
   const [error, setError] = useState("");
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showUserModal, setShowUserModal] = useState(false);
+  const [userRole, setUserRole] = useState("customer");
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
 
   const load = () => api.dashboard().then(setData).catch((err) => setError(err.message));
 
@@ -205,7 +208,7 @@ export default function AdminPortal() {
           {tab === "People" && (
             <div className="portal-grid" style={{ gridTemplateColumns: "1fr 1fr" }}>
               <section className="panel">
-                <PanelHead title="Staff members" />
+                <PanelHead title="Staff members" action="+ New Staff" onAction={() => { setUserRole("staff"); setShowUserModal(true); }} />
                 {data.staff.map((person) => (
                   <div className="person-row" key={person.id}>
                     <span>{person.avatar}</span>
@@ -215,7 +218,7 @@ export default function AdminPortal() {
                 ))}
               </section>
               <section className="panel">
-                <PanelHead title="Customers" />
+                <PanelHead title="Customers" action="+ New Customer" onAction={() => { setUserRole("customer"); setShowUserModal(true); }} />
                 {data.customers.map((person) => (
                   <div className="person-row" key={person.id}>
                     <span>{person.avatar}</span>
@@ -238,7 +241,7 @@ export default function AdminPortal() {
                 <PaymentDetailsPanel payments={data.payments} />
               </section>
               <section className="panel">
-                <PanelHead title="Recorded payments log" />
+                <PanelHead title="Recorded payments log" action="+ Record Payment" onAction={() => setShowPaymentModal(true)} />
                 <div style={{ display: "grid", gap: "10px", marginTop: "15px" }}>
                   {data.payments.map((payment) => (
                     <div key={payment.id} style={{ display: "flex", justifyContent: "space-between", padding: "12px", borderBottom: "1px solid var(--line)" }}>
@@ -349,15 +352,30 @@ export default function AdminPortal() {
           onCreated={() => { setShowCreateModal(false); load(); }}
         />
       )}
+      {showUserModal && (
+        <CreateUserModal
+          role={userRole}
+          onClose={() => setShowUserModal(false)}
+          onCreated={() => { setShowUserModal(false); load(); }}
+        />
+      )}
+      {showPaymentModal && (
+        <RecordPaymentModal
+          customers={data.customers}
+          projects={data.projects}
+          onClose={() => setShowPaymentModal(false)}
+          onCreated={() => { setShowPaymentModal(false); load(); }}
+        />
+      )}
     </div>
   );
 }
 
-function PanelHead({ title, action }) {
+function PanelHead({ title, action, onAction }) {
   return (
     <header className="panel-head">
       <h2>{title}</h2>
-      {action && <button>{action} <ChevronRight size={15} /></button>}
+      {action && <button type="button" onClick={onAction}>{action} <ChevronRight size={15} /></button>}
     </header>
   );
 }
@@ -691,6 +709,132 @@ function CreateProjectModal({ data, onClose, onCreated }) {
               {loading ? "Creating..." : "Create Project"}
             </button>
           </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+function CreateUserModal({ role, onClose, onCreated }) {
+  const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState('');
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    const form = e.target;
+    const body = {
+      name: form.name.value,
+      email: form.email.value,
+      phone: form.phone.value,
+      role
+    };
+    try {
+      await api.createUser(body);
+      onCreated();
+    } catch (err) {
+      setError(err.message);
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div className="modal-overlay">
+      <div className="modal">
+        <header>
+          <h3>Add new {role}</h3>
+          <button onClick={onClose}><X size={20} /></button>
+        </header>
+        <form onSubmit={handleSubmit}>
+          {error && <div className="error-msg">{error}</div>}
+          <div className="field">
+            <label>Full Name</label>
+            <input name="name" required placeholder="e.g. Jane Doe" />
+          </div>
+          <div className="field">
+            <label>Email address</label>
+            <input name="email" type="email" required placeholder="jane@example.com" />
+          </div>
+          <div className="field">
+            <label>Phone number</label>
+            <input name="phone" required placeholder="+91 9876543210" />
+          </div>
+          <footer style={{ marginTop: 24, display: 'flex', gap: 12, justifyContent: 'flex-end' }}>
+            <button type="button" className="button" onClick={onClose} disabled={loading}>Cancel</button>
+            <button type="submit" className="button button--dark" disabled={loading}>
+              {loading ? 'Adding...' : `Add ${role}`}
+            </button>
+          </footer>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+function RecordPaymentModal({ customers, projects, onClose, onCreated }) {
+  const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState('');
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    const form = e.target;
+    const body = {
+      customerId: form.customerId.value,
+      projectId: form.projectId.value,
+      amount: form.amount.value,
+      milestone: form.milestone.value,
+      date: new Date().toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' }),
+      status: 'paid'
+    };
+    try {
+      await api.createPayment(body);
+      onCreated();
+    } catch (err) {
+      setError(err.message);
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div className="modal-overlay">
+      <div className="modal">
+        <header>
+          <h3>Record Payment</h3>
+          <button onClick={onClose}><X size={20} /></button>
+        </header>
+        <form onSubmit={handleSubmit}>
+          {error && <div className="error-msg">{error}</div>}
+          <div className="field">
+            <label>Customer</label>
+            <select name="customerId" required>
+              <option value="">Select a customer</option>
+              {customers.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+            </select>
+          </div>
+          <div className="field">
+            <label>Project (Optional)</label>
+            <select name="projectId">
+              <option value="">General / No project</option>
+              {projects.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+            </select>
+          </div>
+          <div className="field">
+            <label>Amount (₹)</label>
+            <input name="amount" type="number" required placeholder="e.g. 50000" />
+          </div>
+          <div className="field">
+            <label>Milestone / Note</label>
+            <input name="milestone" required placeholder="e.g. Advance Payment" />
+          </div>
+          <footer style={{ marginTop: 24, display: 'flex', gap: 12, justifyContent: 'flex-end' }}>
+            <button type="button" className="button" onClick={onClose} disabled={loading}>Cancel</button>
+            <button type="submit" className="button button--dark" disabled={loading}>
+              {loading ? 'Recording...' : 'Record Payment'}
+            </button>
+          </footer>
         </form>
       </div>
     </div>
