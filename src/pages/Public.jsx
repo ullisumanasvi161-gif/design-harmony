@@ -106,13 +106,11 @@ function PublicLayout() {
 
   const isLightBgPage = ["/projects", "/preview", "/contact", "/consultation"].includes(location.pathname);
   const shouldBeScrolled = scrolled || isLightBgPage;
-  const isAdmin = user?.role === "admin";
-  const isStaff = user?.role === "staff";
   const isCustomer = user?.role === "customer";
 
-  // Determine nav account link
-  const accountPath = isAdmin ? "/admin" : isStaff ? "/staff" : isCustomer ? "/account" : "/signup";
-  const accountLabel = isAdmin ? "Admin Portal" : isStaff ? "Staff Portal" : isCustomer ? "My Account" : "Sign up & book";
+  // Determine nav account link (only for customers/public)
+  const accountPath = isCustomer ? "/account" : "/signup";
+  const accountLabel = isCustomer ? "My Account" : "Sign up & book";
 
   const { logout } = useAuth();
 
