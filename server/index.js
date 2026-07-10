@@ -344,7 +344,71 @@ app.patch("/api/bookings/:id", requireAuth(["admin"]), (req, res) => {
   const db = readStore();
   const index = db.bookings.findIndex((booking) => booking.id === req.params.id);
   if (index < 0) return res.status(404).json({ message: "Booking not found." });
-  db.bookings[index] = { ...db.bookings[index], ...req.body };
+  
+  const booking = db.bookings[index];
+  const oldStatus = booking.status;
+  
+  db.bookings[index] = { ...booking, ...req.body };
+  
+  // Automate project creation if marked as contacted
+  if (req.body.status === "contacted" && oldStatus !== "contacted") {
+    let numericBudget = 0;
+    if (booking.budget) {
+      if (booking.budget.includes("5–10")) numericBudget = 750000;
+      else if (booking.budget.includes("10–20")) numericBudget = 1500000;
+      else if (booking.budget.includes("20–35")) numericBudget = 2750000;
+      else if (booking.budget.includes("35–50")) numericBudget = 4250000;
+      else if (booking.budget.includes("50L+")) numericBudget = 6000000;
+    }
+    
+    // Check if customer exists, if not create one
+    let customerUser = db.users.find(u => u.email === booking.email);
+    if (!customerUser) {
+      customerUser = {
+        id: id("u"),
+        name: booking.name,
+        email: booking.email || `${booking.mobile}@designharmony.com`,
+        phone: booking.mobile || booking.phone || "",
+        role: "customer",
+        title: "Customer",
+        avatar: booking.name?.split(" ").map((part) => part[0]).join("").slice(0, 2).toUpperCase() || "CU",
+        passwordHash: hashPassword("harmony123") // Default password for auto-created customers
+      };
+      db.users.push(customerUser);
+    }
+    
+    const project = {
+      id: id("p"),
+      name: `${booking.projectType || "Interior"} - ${booking.name}`,
+      customerId: booking.customerId || customerUser.id,
+      customer: booking.name,
+      location: booking.location || "Hyderabad",
+      category: "General Interiors",
+      budget: numericBudget,
+      status: "design",
+      paymentStatus: "pending",
+      progress: 0,
+      staffId: "",
+      designer: "Unassigned",
+      startDate: new Date().toISOString().slice(0, 10),
+      dueDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10),
+      nextMilestone: "Initial design consultation",
+      image: "/hero-interior.png",
+      bookingId: booking.id
+    };
+    db.projects.unshift(project);
+    
+    if (numericBudget > 0) {
+      const p1 = Math.round(numericBudget * 0.4);
+      const p2 = Math.round(numericBudget * 0.4);
+      const p3 = numericBudget - p1 - p2;
+      const dateStr = new Date().toLocaleDateString("en-IN", { month: "short", day: "numeric", year: "numeric" });
+      db.payments.push({ id: id("pay"), projectId: project.id, customerId: project.customerId, customer: project.customer, amount: p1, status: "pending", date: dateStr, milestone: "Advance (40%)" });
+      db.payments.push({ id: id("pay"), projectId: project.id, customerId: project.customerId, customer: project.customer, amount: p2, status: "pending", date: "TBD", milestone: "Mid-project (40%)" });
+      db.payments.push({ id: id("pay"), projectId: project.id, customerId: project.customerId, customer: project.customer, amount: p3, status: "pending", date: "TBD", milestone: "Handover (20%)" });
+    }
+  }
+
   writeStore(db);
   res.json(db.bookings[index]);
 });

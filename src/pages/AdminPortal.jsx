@@ -730,6 +730,9 @@ function CreateUserModal({ role, onClose, onCreated }) {
       phone: form.phone.value,
       role
     };
+    if (role === 'staff' && form.password) {
+      body.password = form.password.value;
+    }
     try {
       await api.createUser(body);
       onCreated();
@@ -760,6 +763,12 @@ function CreateUserModal({ role, onClose, onCreated }) {
             <label>Phone number</label>
             <input name="phone" required placeholder="+91 9876543210" />
           </div>
+          {role === 'staff' && (
+            <div className="field">
+              <label>Password (for staff login)</label>
+              <input name="password" required minLength="6" placeholder="Choose a password" />
+            </div>
+          )}
           <footer style={{ marginTop: 24, display: 'flex', gap: 12, justifyContent: 'flex-end' }}>
             <button type="button" className="button" onClick={onClose} disabled={loading}>Cancel</button>
             <button type="submit" className="button button--dark" disabled={loading}>

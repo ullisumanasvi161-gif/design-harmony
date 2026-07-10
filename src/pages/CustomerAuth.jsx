@@ -106,13 +106,7 @@ export default function CustomerAuth() {
                 </button>
               </form>
 
-              {/* Login link — only shown on signup page */}
-              <button
-                className="auth-mode"
-                onClick={() => { setMode("login"); navigate("/login", { replace: true }); }}
-              >
-                Already have an account? Sign in
-              </button>
+              {/* Login link removed per user request */}
             </>
           ) : (
             <>
@@ -167,10 +161,7 @@ export default function CustomerAuth() {
             <ShieldCheck size={16} />
             <span>
               <BookOpen size={13} style={{ display: "inline", marginRight: 4 }} />
-              Customers book &amp; track projects here.&nbsp;
-              <Link to="/admin/login" className="auth-portal-link">Admin portal</Link>
-              &nbsp;·&nbsp;
-              <Link to="/staff/login" className="auth-portal-link">Staff portal</Link>
+              Customers book &amp; track projects here.
             </span>
           </div>
         </div>
