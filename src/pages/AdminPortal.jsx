@@ -716,8 +716,8 @@ function CreateProjectModal({ data, onClose, onCreated }) {
 }
 
 function CreateUserModal({ role, onClose, onCreated }) {
-  const [loading, setLoading] = React.useState(false);
-  const [error, setError] = React.useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -773,8 +773,8 @@ function CreateUserModal({ role, onClose, onCreated }) {
 }
 
 function RecordPaymentModal({ customers, projects, onClose, onCreated }) {
-  const [loading, setLoading] = React.useState(false);
-  const [error, setError] = React.useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   async function handleSubmit(e) {
     e.preventDefault();
