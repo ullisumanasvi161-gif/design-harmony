@@ -158,6 +158,7 @@ app.get("/api/dashboard", requireAuth(), (req, res) => {
     projects: visibleProjects,
     tasks: db.tasks.filter((task) => projectIds.includes(task.projectId)),
     bookings: req.user.role === "admin" ? db.bookings : [],
+    contacts: req.user.role === "admin" ? db.contacts : [],
     payments:
       req.user.role === "admin"
         ? db.payments

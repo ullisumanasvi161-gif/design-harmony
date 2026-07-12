@@ -262,12 +262,31 @@ export default function AdminPortal() {
 
           {tab === "Messages" && (
             <div className="portal-grid" style={{ gridTemplateColumns: "1fr" }}>
-              <section className="panel" style={{ height: "400px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+              <section className="panel panel--wide" style={{ minHeight: "400px" }}>
                 <PanelHead title="Inbox Messages" />
-                <div style={{ textAlign: "center", color: "var(--muted)", margin: "auto" }}>
-                  <MessageSquare size={48} style={{ color: "var(--gold)", marginBottom: "15px" }} />
-                  <p>No new messages. Select a project or staff member to start a conversation.</p>
-                </div>
+                {data.contacts && data.contacts.length > 0 ? (
+                  <div className="booking-list">
+                    {data.contacts.map((contact) => (
+                      <article className="admin-booking-card" key={contact.id}>
+                        <div className="booking-date">
+                          <strong>{new Date(contact.createdAt).getDate()}</strong>
+                          <span>{new Date(contact.createdAt).toLocaleDateString("en", { month: "short" })}</span>
+                        </div>
+                        <div style={{ flex: 1 }}>
+                          <strong>{contact.name}</strong>
+                          <small>Contact: {contact.phone || "Not provided"}{contact.email ? ` · ${contact.email}` : ""}</small>
+                          <p style={{ marginTop: 8, color: "var(--foreground)", whiteSpace: "pre-wrap" }}>{contact.message}</p>
+                        </div>
+                        <Status>{contact.status || "unread"}</Status>
+                      </article>
+                    ))}
+                  </div>
+                ) : (
+                  <div style={{ textAlign: "center", color: "var(--muted)", margin: "auto", display: "flex", flexDirection: "column", justifyContent: "center", height: "100%", padding: "40px" }}>
+                    <MessageSquare size={48} style={{ color: "var(--gold)", marginBottom: "15px", alignSelf: "center" }} />
+                    <p>No new messages. Select a project or staff member to start a conversation.</p>
+                  </div>
+                )}
               </section>
             </div>
           )}
