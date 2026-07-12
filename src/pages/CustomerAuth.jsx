@@ -106,7 +106,13 @@ export default function CustomerAuth() {
                 </button>
               </form>
 
-              {/* Login link removed per user request */}
+              {/* Login link */}
+              <button
+                className="auth-mode"
+                onClick={() => { setMode("login"); navigate("/login", { replace: true }); }}
+              >
+                Already have an account? Sign in
+              </button>
             </>
           ) : (
             <>
