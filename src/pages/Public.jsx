@@ -900,8 +900,9 @@ export function Contact() {
   const [message, setMessage] = useState("");
   async function submit(event) {
     event.preventDefault();
+    const form = event.currentTarget;
     try {
-      const body = Object.fromEntries(new FormData(event.currentTarget));
+      const body = Object.fromEntries(new FormData(form));
       await api.contact(body);
 
       try {
@@ -916,7 +917,7 @@ export function Contact() {
         console.error("Supabase connection error:", err);
       }
 
-      event.currentTarget.reset();
+      form.reset();
       setMessage("Thank you. Your note is with our studio.");
     } catch (error) {
       setMessage(error.message);
