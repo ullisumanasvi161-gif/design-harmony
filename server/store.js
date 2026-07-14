@@ -168,20 +168,45 @@ const initialData = {
   ]
 };
 
-function ensureStore() {
-  fs.mkdirSync(path.dirname(DATA_FILE), { recursive: true });
-  if (!fs.existsSync(DATA_FILE)) {
-    fs.writeFileSync(DATA_FILE, JSON.stringify(initialData, null, 2));
+import { createClient } from "@supabase/supabase-js";
+
+// On Vercel, env variables starting with VITE_ are automatically passed to Node
+const supabaseUrl = process.env.VITE_SUPABASE_URL || "https://ptkgmzefxnzgvaimrdsi.supabase.co";
+const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || "sb_publishable_3mhYKINQCxojUZhJu44UKQ_vmeMFO0W";
+const supabase = createClient(supabaseUrl, supabaseKey);
+
+let memoryCache = null;
+
+export async function readStore() {
+  if (memoryCache) return memoryCache;
+
+  const { data, error } = await supabase
+    .from("backend_store")
+    .select("data")
+    .eq("id", "db")
+    .single();
+
+  if (error || !data) {
+    console.error("Supabase read error, falling back to initial data:", error);
+    memoryCache = { ...initialData };
+    return memoryCache;
   }
+
+  // Use the initialData structure but merge fetched data in case of missing keys
+  memoryCache = { ...initialData, ...data.data };
+  return memoryCache;
 }
 
-export function readStore() {
-  ensureStore();
-  return JSON.parse(fs.readFileSync(DATA_FILE, "utf8"));
-}
-
-export function writeStore(data) {
-  fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
+export async function writeStore(data) {
+  memoryCache = data;
+  const { error } = await supabase
+    .from("backend_store")
+    .update({ data: data })
+    .eq("id", "db");
+    
+  if (error) {
+    console.error("Supabase write error:", error);
+  }
   return data;
 }
 

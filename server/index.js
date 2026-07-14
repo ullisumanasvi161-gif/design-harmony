@@ -68,9 +68,9 @@ const publicUser = ({ passwordHash, ...user }) => user;
 
 app.get("/api/health", (_req, res) => res.json({ ok: true, service: "Design Harmony API" }));
 
-app.post("/api/auth/login", (req, res) => {
+app.post("/api/auth/login", async (req, res) => {
   const { email, password } = req.body;
-  const db = readStore();
+  const db = await readStore();
   const user = db.users.find((item) => item.email.toLowerCase() === String(email).toLowerCase());
   if (!user || !verifyPassword(password || "", user.passwordHash)) {
     return res.status(401).json({ message: "Email or password is incorrect." });
@@ -79,8 +79,8 @@ app.post("/api/auth/login", (req, res) => {
   res.json({ token: signToken({ id: user.id, role: user.role, email: user.email }), user: safe });
 });
 
-app.post("/api/auth/register", (req, res) => {
-  const db = readStore();
+app.post("/api/auth/register", async (req, res) => {
+  const db = await readStore();
   if (db.users.some((user) => user.email.toLowerCase() === req.body.email?.toLowerCase())) {
     return res.status(409).json({ message: "An account already exists with this email." });
   }
@@ -94,18 +94,18 @@ app.post("/api/auth/register", (req, res) => {
     passwordHash: hashPassword(req.body.password)
   };
   db.users.push(user);
-  writeStore(db);
+  await writeStore(db);
   const safe = publicUser(user);
   res.status(201).json({ token: signToken({ id: user.id, role: user.role, email: user.email }), user: safe });
 });
 
-app.get("/api/auth/me", requireAuth(), (req, res) => {
+app.get("/api/auth/me", requireAuth(), async (req, res) => {
   const user = readStore().users.find((item) => item.id === req.user.id);
   res.json(publicUser(user));
 });
 
-app.get("/api/public", (_req, res) => {
-  const db = readStore();
+app.get("/api/public", async (_req, res) => {
+  const db = await readStore();
   res.json({
     services: db.services,
     projects: db.projects,
@@ -114,8 +114,8 @@ app.get("/api/public", (_req, res) => {
   });
 });
 
-app.post("/api/bookings", (req, res) => {
-  const db = readStore();
+app.post("/api/bookings", async (req, res) => {
+  const db = await readStore();
   const booking = {
     id: id("b"),
     ...req.body,
@@ -123,20 +123,20 @@ app.post("/api/bookings", (req, res) => {
     createdAt: new Date().toISOString()
   };
   db.bookings.unshift(booking);
-  writeStore(db);
+  await writeStore(db);
   res.status(201).json(booking);
 });
 
-app.post("/api/contacts", (req, res) => {
-  const db = readStore();
+app.post("/api/contacts", async (req, res) => {
+  const db = await readStore();
   const contact = { id: id("c"), ...req.body, status: "unread", createdAt: new Date().toISOString() };
   db.contacts.unshift(contact);
-  writeStore(db);
+  await writeStore(db);
   res.status(201).json(contact);
 });
 
-app.get("/api/dashboard", requireAuth(), (req, res) => {
-  const db = readStore();
+app.get("/api/dashboard", requireAuth(), async (req, res) => {
+  const db = await readStore();
   const visibleProjects =
     req.user.role === "admin"
       ? db.projects
@@ -182,17 +182,17 @@ app.get("/api/dashboard", requireAuth(), (req, res) => {
   });
 });
 
-app.patch("/api/projects/:id", requireAuth(["admin", "staff"]), (req, res) => {
-  const db = readStore();
+app.patch("/api/projects/:id", requireAuth(["admin", "staff"]), async (req, res) => {
+  const db = await readStore();
   const index = db.projects.findIndex((project) => project.id === req.params.id);
   if (index < 0) return res.status(404).json({ message: "Project not found." });
   db.projects[index] = { ...db.projects[index], ...req.body };
-  writeStore(db);
+  await writeStore(db);
   res.json(db.projects[index]);
 });
 
-app.post("/api/projects", requireAuth(["admin"]), (req, res) => {
-  const db = readStore();
+app.post("/api/projects", requireAuth(["admin"]), async (req, res) => {
+  const db = await readStore();
   const customerUser = db.users.find((u) => u.id === req.body.customerId);
   const staffUser = db.users.find((u) => u.id === req.body.staffId);
   const budget = Number(req.body.budget) || 0;
@@ -228,12 +228,12 @@ app.post("/api/projects", requireAuth(["admin"]), (req, res) => {
     db.payments.push({ id: id("pay"), projectId: project.id, customerId: project.customerId, customer: project.customer, amount: p3, status: "pending", date: "TBD", milestone: "Handover (20%)" });
   }
 
-  writeStore(db);
+  await writeStore(db);
   res.status(201).json(project);
 });
 
-app.post("/api/users", requireAuth(["admin"]), (req, res) => {
-  const db = readStore();
+app.post("/api/users", requireAuth(["admin"]), async (req, res) => {
+  const db = await readStore();
   if (db.users.some((user) => user.email.toLowerCase() === req.body.email?.toLowerCase())) {
     return res.status(409).json({ message: "An account already exists with this email." });
   }
@@ -248,12 +248,12 @@ app.post("/api/users", requireAuth(["admin"]), (req, res) => {
     passwordHash: hashPassword(req.body.password || "harmony123") // Default password
   };
   db.users.push(user);
-  writeStore(db);
+  await writeStore(db);
   res.status(201).json(publicUser(user));
 });
 
-app.post("/api/payments", requireAuth(["admin"]), (req, res) => {
-  const db = readStore();
+app.post("/api/payments", requireAuth(["admin"]), async (req, res) => {
+  const db = await readStore();
   const customerUser = db.users.find((u) => u.id === req.body.customerId);
   const payment = {
     id: id("pay"),
@@ -266,12 +266,12 @@ app.post("/api/payments", requireAuth(["admin"]), (req, res) => {
     milestone: req.body.milestone || "Custom Payment"
   };
   db.payments.unshift(payment);
-  writeStore(db);
+  await writeStore(db);
   res.status(201).json(payment);
 });
 
-app.patch("/api/payments/:id", requireAuth(["admin", "customer"]), (req, res) => {
-  const db = readStore();
+app.patch("/api/payments/:id", requireAuth(["admin", "customer"]), async (req, res) => {
+  const db = await readStore();
   const index = db.payments.findIndex((p) => p.id === req.params.id);
   if (index < 0) return res.status(404).json({ message: "Payment not found." });
   
@@ -283,13 +283,13 @@ app.patch("/api/payments/:id", requireAuth(["admin", "customer"]), (req, res) =>
   if (req.body.status === "paid" && db.payments[index].date === "TBD") {
     db.payments[index].date = new Date().toLocaleDateString("en-IN", { month: "short", day: "numeric", year: "numeric" });
   }
-  writeStore(db);
+  await writeStore(db);
   res.json(db.payments[index]);
 });
 
-app.patch("/api/services/:id/image", requireAuth(["admin"]), upload.single("image"), (req, res) => {
+app.patch("/api/services/:id/image", requireAuth(["admin"]), upload.single("image"), async (req, res) => {
   if (!req.file) return res.status(400).json({ message: "Please choose an image to upload." });
-  const db = readStore();
+  const db = await readStore();
   const index = db.services.findIndex((service) => service.id === req.params.id);
   if (index < 0) return res.status(404).json({ message: "Service not found." });
   db.services[index] = {
@@ -298,12 +298,12 @@ app.patch("/api/services/:id/image", requireAuth(["admin"]), upload.single("imag
     imageName: req.file.originalname,
     updatedAt: new Date().toISOString()
   };
-  writeStore(db);
+  await writeStore(db);
   res.json(db.services[index]);
 });
 
-app.post("/api/services", requireAuth(["admin"]), upload.single("image"), (req, res) => {
-  const db = readStore();
+app.post("/api/services", requireAuth(["admin"]), upload.single("image"), async (req, res) => {
+  const db = await readStore();
   if (!req.body.title?.trim()) return res.status(400).json({ message: "Service title is required." });
   const service = {
     id: id("s"),
@@ -316,13 +316,13 @@ app.post("/api/services", requireAuth(["admin"]), upload.single("image"), (req, 
     createdAt: new Date().toISOString()
   };
   db.services.push(service);
-  writeStore(db);
+  await writeStore(db);
   res.status(201).json(service);
 });
 
-app.post("/api/services/:id/gallery", requireAuth(["admin"]), upload.array("photos", 12), (req, res) => {
+app.post("/api/services/:id/gallery", requireAuth(["admin"]), upload.array("photos", 12), async (req, res) => {
   if (!req.files?.length) return res.status(400).json({ message: "Please choose one or more work photos." });
-  const db = readStore();
+  const db = await readStore();
   const index = db.services.findIndex((service) => service.id === req.params.id);
   if (index < 0) return res.status(404).json({ message: "Service not found." });
   const newPhotos = req.files.map((file) => ({
@@ -337,12 +337,12 @@ app.post("/api/services/:id/gallery", requireAuth(["admin"]), upload.array("phot
     image: db.services[index].image || gallery[0]?.url,
     updatedAt: new Date().toISOString()
   };
-  writeStore(db);
+  await writeStore(db);
   res.status(201).json(db.services[index]);
 });
 
-app.patch("/api/bookings/:id", requireAuth(["admin"]), (req, res) => {
-  const db = readStore();
+app.patch("/api/bookings/:id", requireAuth(["admin"]), async (req, res) => {
+  const db = await readStore();
   const index = db.bookings.findIndex((booking) => booking.id === req.params.id);
   if (index < 0) return res.status(404).json({ message: "Booking not found." });
   
@@ -410,26 +410,26 @@ app.patch("/api/bookings/:id", requireAuth(["admin"]), (req, res) => {
     }
   }
 
-  writeStore(db);
+  await writeStore(db);
   res.json(db.bookings[index]);
 });
 
-app.post("/api/updates", requireAuth(["admin", "staff"]), (req, res) => {
-  const db = readStore();
+app.post("/api/updates", requireAuth(["admin", "staff"]), async (req, res) => {
+  const db = await readStore();
   const update = { id: id("up"), ...req.body, date: new Date().toISOString().slice(0, 10) };
   db.updates.unshift(update);
-  writeStore(db);
+  await writeStore(db);
   res.status(201).json(update);
 });
 
-app.post("/api/upload", requireAuth(), upload.single("file"), (req, res) => {
+app.post("/api/upload", requireAuth(), upload.single("file"), async (req, res) => {
   res.status(201).json({ url: `/uploads/${req.file.filename}`, name: req.file.originalname });
 });
 
-app.post("/api/settings/3d-photo/:room", requireAuth(["admin"]), upload.single("previewPhoto"), (req, res) => {
+app.post("/api/settings/3d-photo/:room", requireAuth(["admin"]), upload.single("previewPhoto"), async (req, res) => {
   if (!req.file) return res.status(400).json({ message: "Please choose an image to upload." });
   const { room } = req.params;
-  const db = readStore();
+  const db = await readStore();
   
   if (!db.settings) db.settings = {};
   if (!db.settings.previewPhotos) {
@@ -452,10 +452,10 @@ app.post("/api/settings/3d-photo/:room", requireAuth(["admin"]), upload.single("
   db.settings.updatedAt = new Date().toISOString();
 });
 
-app.post("/api/settings/project-image/:projectName", requireAuth(["admin"]), upload.single("projectImage"), (req, res) => {
+app.post("/api/settings/project-image/:projectName", requireAuth(["admin"]), upload.single("projectImage"), async (req, res) => {
   if (!req.file) return res.status(400).json({ message: "Please choose an image to upload." });
   const { projectName } = req.params;
-  const db = readStore();
+  const db = await readStore();
   
   if (!db.settings) db.settings = {};
   if (!db.settings.projectImages) {
@@ -470,12 +470,12 @@ app.post("/api/settings/project-image/:projectName", requireAuth(["admin"]), upl
   const filePath = `/uploads/${req.file.filename}`;
   db.settings.projectImages[projectName] = filePath;
   db.settings.updatedAt = new Date().toISOString();
-  writeStore(db);
+  await writeStore(db);
   res.json(getSettings(db));
 });
 
-app.get("/api/invoice/:projectId", requireAuth(), (req, res) => {
-  const db = readStore();
+app.get("/api/invoice/:projectId", requireAuth(), async (req, res) => {
+  const db = await readStore();
   const project = db.projects.find((item) => item.id === req.params.projectId);
   if (!project) return res.status(404).json({ message: "Project not found." });
   res.json({
