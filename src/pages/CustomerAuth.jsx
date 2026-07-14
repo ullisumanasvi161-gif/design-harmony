@@ -74,27 +74,27 @@ export default function CustomerAuth() {
 
           {mode === "register" ? (
             <>
-              <span className="eyebrow">Sign up &amp; book</span>
-              <h1>Create your account.</h1>
-              <p>Register below, then book your consultation and continue the conversation on WhatsApp.</p>
-
-              <form className="auth-form" onSubmit={submit}>
+              <header className="auth-header">
+                <h2>Create your account.</h2>
+                <p>Register below, then book your consultation and continue the conversation on WhatsApp.</p>
+              </header>
+              <form onSubmit={submit} className="auth-form" autoComplete="off">
                 <label>
-                  <span>Full name</span>
-                  <input required name="name" placeholder="Your full name" />
+                  <span>Full Name</span>
+                  <input required name="name" placeholder="Your full name" autoComplete="off" />
                 </label>
                 <label>
-                  <span>Mobile number</span>
-                  <input required name="phone" type="tel" pattern="[0-9]{10}" placeholder="10-digit number" />
+                  <span>Mobile Number</span>
+                  <input required name="phone" type="tel" pattern="[0-9]{10}" placeholder="10-digit number" autoComplete="off" />
                 </label>
                 <label>
                   <span>Email address</span>
-                  <input required name="email" type="email" placeholder="you@example.com" />
+                  <input required name="email" type="email" placeholder="you@example.com" autoComplete="new-email" />
                 </label>
                 <label>
                   <span>Password</span>
                   <div className="password-field">
-                    <input required name="password" type={show ? "text" : "password"} placeholder="Choose a password" />
+                    <input required name="password" type={show ? "text" : "password"} placeholder="Choose a password" autoComplete="new-password" />
                     <button type="button" onClick={() => setShow(!show)}>
                       {show ? <EyeOff /> : <Eye />}
                     </button>
@@ -102,7 +102,7 @@ export default function CustomerAuth() {
                 </label>
                 {error && <p className="form-message error">{error}</p>}
                 <button className="button button--dark" disabled={busy}>
-                  {busy ? "Creating account…" : "Create account & book"} <ArrowRight size={17} />
+                  {busy ? "Creating…" : "Create account & book"} <ArrowRight size={17} />
                 </button>
               </form>
 
