@@ -28,10 +28,20 @@ export default function CustomerAuth() {
     setError("");
     try {
       const formData = new FormData(event.currentTarget);
+      const data = Object.fromEntries(formData);
+      
+      // Remap custom names used to defeat aggressive browser autofill
+      if (mode === "register") {
+        data.email = data.dh_reg_email;
+        data.password = data.dh_reg_password;
+        delete data.dh_reg_email;
+        delete data.dh_reg_password;
+      }
+
       const signedInUser =
         mode === "login"
-          ? await login(Object.fromEntries(formData))
-          : await register(Object.fromEntries(formData));
+          ? await login(data)
+          : await register(data);
 
       // Only allow customer role through this portal
       if (signedInUser.role === "admin") {
@@ -89,12 +99,12 @@ export default function CustomerAuth() {
                 </label>
                 <label>
                   <span>Email address</span>
-                  <input required name="email" type="email" placeholder="you@example.com" autoComplete="new-email" />
+                  <input required name="dh_reg_email" type="email" placeholder="you@example.com" autoComplete="new-email" />
                 </label>
                 <label>
                   <span>Password</span>
                   <div className="password-field">
-                    <input required name="password" type={show ? "text" : "password"} placeholder="Choose a password" autoComplete="new-password" />
+                    <input required name="dh_reg_password" type={show ? "text" : "password"} placeholder="Choose a password" autoComplete="new-password" />
                     <button type="button" onClick={() => setShow(!show)}>
                       {show ? <EyeOff /> : <Eye />}
                     </button>
