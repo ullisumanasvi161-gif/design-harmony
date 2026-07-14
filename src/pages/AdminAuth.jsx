@@ -74,9 +74,10 @@ export default function AdminAuth() {
               <span>Admin email</span>
               <input
                 required
-                name="email"
+                name="dh_admin_email"
                 type="email"
                 placeholder="admin@designharmony.com"
+                autoComplete="new-email"
                 value={fields.email}
                 onChange={(e) => setFields({ ...fields, email: e.target.value })}
               />
@@ -86,9 +87,10 @@ export default function AdminAuth() {
               <div className="password-field">
                 <input
                   required
-                  name="password"
+                  name="dh_admin_password"
                   type={show ? "text" : "password"}
                   placeholder="Admin password"
+                  autoComplete="new-password"
                   value={fields.password}
                   onChange={(e) => setFields({ ...fields, password: e.target.value })}
                 />

@@ -73,9 +73,10 @@ export default function StaffAuth() {
               <span>Staff email</span>
               <input
                 required
-                name="email"
+                name="dh_staff_email"
                 type="email"
                 placeholder="staff@designharmony.com"
+                autoComplete="new-email"
                 value={fields.email}
                 onChange={(e) => setFields({ ...fields, email: e.target.value })}
               />
@@ -85,9 +86,10 @@ export default function StaffAuth() {
               <div className="password-field">
                 <input
                   required
-                  name="password"
+                  name="dh_staff_password"
                   type={show ? "text" : "password"}
                   placeholder="Staff password"
+                  autoComplete="new-password"
                   value={fields.password}
                   onChange={(e) => setFields({ ...fields, password: e.target.value })}
                 />
