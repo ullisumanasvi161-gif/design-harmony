@@ -881,7 +881,7 @@ ${body.message || "None"}`
           <label><span>Project location *</span><input required name="location" placeholder="Area, city" /></label>
           <label><span>Project type *</span><select required name="projectType" defaultValue={selectedService}><option value="" disabled>Select a service</option>{publishedServices.map((service) => <option key={service.title}>{service.title}</option>)}</select></label>
           <label><span>Indicative budget *</span><select required name="budget" defaultValue=""><option value="" disabled>Select a range</option><option>₹5–10L</option><option>₹10–20L</option><option>₹20–35L</option><option>₹35–50L</option><option>₹50L+</option></select></label>
-          <label><span>Preferred date</span><input name="preferredDate" type="date" /></label>
+          <label><span>Preferred date</span><input name="preferredDate" type="date" min={new Date().toISOString().split('T')[0]} /></label>
           <label className="full"><span>Anything we should know?</span><textarea name="message" rows="4" placeholder="Tell us about your home, timeline, style or priorities..." /></label>
           <button className="button button--dark full" disabled={state.status === "loading"}>{state.status === "loading" ? "Booking…" : selectedService ? "Book this service" : "Book my free consultation"} <ArrowRight size={18} /></button>
           {state.message && (
