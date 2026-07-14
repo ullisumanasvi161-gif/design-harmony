@@ -11,8 +11,8 @@ export default function StaffAuth() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [fields, setFields] = useState({
-    email: "staff@designharmony.com",
-    password: "staff123"
+    email: "",
+    password: ""
   });
 
   if (user) {

@@ -11,8 +11,8 @@ export default function AdminAuth() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [fields, setFields] = useState({
-    email: "admin@designharmony.com",
-    password: "admin123"
+    email: "",
+    password: ""
   });
 
   if (user) {
